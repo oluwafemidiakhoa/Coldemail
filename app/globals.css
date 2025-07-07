@@ -1,3 +1,10 @@
+/* app/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom resets or overrides */
+html, body {
+  margin: 0;
+  padding: 0;
+}
