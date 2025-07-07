@@ -1,3 +1,4 @@
+// app/dashboard/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -29,33 +30,32 @@ export default function DashboardPage() {
   };
 
   return (
-    <main className="max-w-xl mx-auto mt-12 p-6 bg-white rounded-lg shadow">
-      <h1 className="text-2xl font-bold mb-4">AI Copilot</h1>
+    <div className="bg-white rounded-lg shadow-md p-6">
+      <h2 className="text-2xl font-bold mb-4">AI Copilot</h2>
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <textarea
           rows={4}
-          className="w-full p-3 border rounded focus:ring"
-          placeholder="What can I do?"
+          className="w-full p-3 border rounded focus:ring focus:border-blue-300"
+          placeholder="Give me a quick brief…"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
         />
         <button
           type="submit"
           disabled={loading}
-          className="px-6 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
+          className="px-5 py-2 bg-blue-600 text-white rounded shadow disabled:opacity-50"
         >
           {loading ? "Thinking…" : "Send"}
         </button>
       </form>
 
       {reply && (
-        <section className="mt-6">
-          <h2 className="text-xl font-semibold mb-2">Response</h2>
-          <div className="whitespace-pre-wrap p-4 bg-gray-50 rounded">
-            {reply}
-          </div>
-        </section>
+        <div className="mt-6 p-4 bg-gray-50 rounded">
+          <h3 className="text-xl font-semibold mb-2">Response</h3>
+          <p className="whitespace-pre-wrap">{reply}</p>
+        </div>
       )}
-    </main>
+    </div>
   );
 }
