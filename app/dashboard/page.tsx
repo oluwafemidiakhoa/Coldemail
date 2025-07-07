@@ -1,12 +1,13 @@
-// pages/dashboard.tsx
+"use client";
+
 import { useState } from "react";
 
-export default function Dashboard() {
+export default function DashboardPage() {
   const [prompt, setPrompt] = useState("");
   const [reply, setReply] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleSend = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!prompt.trim()) return;
     setLoading(true);
@@ -18,23 +19,22 @@ export default function Dashboard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt }),
       });
-      const body = await res.json();
-      setReply(body.reply);
-    } catch (err) {
-      console.error(err);
-      setReply("❌ Something went wrong. Check the console.");
+      const json = await res.json();
+      setReply(json.reply);
+    } catch {
+      setReply("Error generating response.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{ maxWidth: 600, margin: "2rem auto", fontFamily: "sans-serif" }}>
-      <h1>Cold Email SaaS — AI Copilot</h1>
-      <form onSubmit={handleSend}>
+    <main className="max-w-xl mx-auto mt-12 p-6 bg-white rounded-lg shadow">
+      <h1 className="text-2xl font-bold mb-4">AI Copilot</h1>
+      <form onSubmit={handleSubmit} className="space-y-4">
         <textarea
           rows={4}
-          style={{ width: "100%", padding: "0.5rem", fontSize: "1rem" }}
+          className="w-full p-3 border rounded focus:ring"
           placeholder="What can I do?"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
@@ -42,31 +42,20 @@ export default function Dashboard() {
         <button
           type="submit"
           disabled={loading}
-          style={{
-            marginTop: "0.5rem",
-            padding: "0.5rem 1rem",
-            background: "#0070f3",
-            color: "#fff",
-            border: "none",
-            cursor: loading ? "not-allowed" : "pointer",
-          }}
+          className="px-6 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
         >
           {loading ? "Thinking…" : "Send"}
         </button>
       </form>
 
       {reply && (
-        <div
-          style={{
-            marginTop: "1.5rem",
-            padding: "1rem",
-            background: "#f3f3f3",
-            whiteSpace: "pre-wrap",
-          }}
-        >
-          {reply}
-        </div>
+        <section className="mt-6">
+          <h2 className="text-xl font-semibold mb-2">Response</h2>
+          <div className="whitespace-pre-wrap p-4 bg-gray-50 rounded">
+            {reply}
+          </div>
+        </section>
       )}
-    </div>
+    </main>
   );
 }
