@@ -1,14 +1,19 @@
+// app/page.tsx
 export default function HomePage() {
   return (
-    <main className="p-6">
-      <h1 className="text-3xl font-bold">Welcome to Cold Email SaaS</h1>
-      <p className="mt-4 text-gray-600">
-        Head over to{' '}
-        <a href="/dashboard" className="text-blue-600 underline">
-          Dashboard
-        </a>{' '}
-        to get started.
+    <section className="text-center py-20">
+      <h2 className="text-4xl font-extrabold mb-4">
+        AI-Powered Cold Email Campaigns
+      </h2>
+      <p className="text-lg text-gray-600 mb-8">
+        Draft, send, and track personalized cold emails—supercharged by AI.
       </p>
-    </main>
+      <a
+        href="/dashboard"
+        className="inline-block px-6 py-3 bg-blue-600 text-white rounded shadow hover:bg-blue-700 transition"
+      >
+        Try the AI Copilot →
+      </a>
+    </section>
   );
 }
