@@ -2,26 +2,34 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import nodemailer from "nodemailer";
 
+type Data = { success: boolean } | { error: string };
+
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<{ success?: boolean; error?: string }>
+  res: NextApiResponse<Data>
 ) {
   if (req.method !== "POST") {
-    return res.status(405).end();
-  }
-  const { to, subject, body } = req.body;
-  if (!to || !subject || !body) {
-    return res.status(400).json({ error: "Missing fields" });
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
-  // Configure Zoho SMTP transport
+  const { to, subject, body } = req.body as {
+    to?: string;
+    subject?: string;
+    body?: string;
+  };
+
+  if (!to || !subject || !body) {
+    return res.status(400).json({ error: "Missing to, subject or body" });
+  }
+
+  // Zoho SMTP transport
   const transporter = nodemailer.createTransport({
     host: "smtp.zoho.com",
     port: 465,
     secure: true,
     auth: {
-      user: process.env.ZOHO_EMAIL,
-      pass: process.env.ZOHO_PASSWORD,
+      user: process.env.ZOHO_EMAIL as string,
+      pass: process.env.ZOHO_PASSWORD as string,
     },
   });
 
