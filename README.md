@@ -109,4 +109,3 @@ Run npm run lint & npm test before pushing.
 📄 License
 MIT – do anything, just give credit.
 
-<p align="center"><i>Cold outreach doesn’t have to be cold. <br>Power it with data & AI ❤️</i></p> ```
