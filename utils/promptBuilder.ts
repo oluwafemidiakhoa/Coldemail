@@ -1,7 +1,24 @@
+// utils/promptBuilder.ts
+
 import { searchLeads } from "./serper";
 
-export async function buildPrompt(company: string, painPoint: string) {
-  const intel = await searchLeads(`${company} news`);
-  const headline = intel?.news?.[0]?.title || '';
-  return \`Write a 2‑paragraph cold email to \${company}. Reference "\${headline}" if available. Highlight pain point: \${painPoint}. End with CTA.\`;
+export interface PromptOptions {
+  companyName: string;
+  painPoint: string;
+}
+
+export async function buildPrompt({
+  companyName,
+  painPoint,
+}: PromptOptions): Promise<string> {
+  // Fetch the latest news headlines for the company
+  const intel = await searchLeads(`${companyName} recent news`);
+  const headline = intel.news?.[0]?.title ?? "";
+
+  // Construct a two-paragraph cold-email prompt
+  return `
+Write a concise, friendly two-paragraph B2B cold email to ${companyName}. 
+In the first paragraph, open by referencing this recent headline: "${headline}". 
+In the second paragraph, address the pain point: "${painPoint}", and close with a clear call-to-action.
+  `.trim();
 }
