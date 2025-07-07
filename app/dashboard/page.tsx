@@ -1,41 +1,40 @@
-// app/dashboard/page.tsx
-"use client";
-
+// pages/dashboard.tsx
 import { useState } from "react";
 
-export default function DashboardPage() {
+export default function Dashboard() {
   const [prompt, setPrompt] = useState("");
-  const [result, setResult] = useState<string | null>(null);
+  const [reply, setReply] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!prompt.trim()) return;
     setLoading(true);
-    setResult(null);
+    setReply(null);
+
     try {
       const res = await fetch("/api/ai-copilot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt }),
       });
-      const data = await res.json();
-      setResult(data.reply);
+      const body = await res.json();
+      setReply(body.reply);
     } catch (err) {
       console.error(err);
-      setResult("Oops—something went wrong.");
+      setReply("❌ Something went wrong. Check the console.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <main className="max-w-xl mx-auto mt-12 p-6 bg-white rounded-lg shadow">
-      <h1 className="text-2xl font-bold mb-4">AI Copilot</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div style={{ maxWidth: 600, margin: "2rem auto", fontFamily: "sans-serif" }}>
+      <h1>Cold Email SaaS — AI Copilot</h1>
+      <form onSubmit={handleSend}>
         <textarea
-          className="w-full p-3 border rounded focus:outline-none focus:ring"
           rows={4}
+          style={{ width: "100%", padding: "0.5rem", fontSize: "1rem" }}
           placeholder="What can I do?"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
@@ -43,20 +42,31 @@ export default function DashboardPage() {
         <button
           type="submit"
           disabled={loading}
-          className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+          style={{
+            marginTop: "0.5rem",
+            padding: "0.5rem 1rem",
+            background: "#0070f3",
+            color: "#fff",
+            border: "none",
+            cursor: loading ? "not-allowed" : "pointer",
+          }}
         >
           {loading ? "Thinking…" : "Send"}
         </button>
       </form>
 
-      {result && (
-        <section className="mt-6">
-          <h2 className="text-xl font-semibold mb-2">Response</h2>
-          <div className="whitespace-pre-wrap p-4 bg-gray-50 rounded">
-            {result}
-          </div>
-        </section>
+      {reply && (
+        <div
+          style={{
+            marginTop: "1.5rem",
+            padding: "1rem",
+            background: "#f3f3f3",
+            whiteSpace: "pre-wrap",
+          }}
+        >
+          {reply}
+        </div>
       )}
-    </main>
+    </div>
   );
 }
