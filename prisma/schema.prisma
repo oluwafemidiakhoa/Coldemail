@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String   @id @default(cuid())
+  email            String   @unique
+  name             String?
+  passwordHash     String?
+  teamMemberships  TeamMembership[]
+  emails           EmailLog[]
+  createdAt        DateTime @default(now())
+}
+
+model Team {
+  id            String   @id @default(cuid())
+  name          String
+  ownerId       String
+  members       TeamMembership[]
+  leads         Lead[]
+  snippets      Snippet[]
+  domains       SendingDomain[]
+  subscriptions Subscription[]
+  createdAt     DateTime @default(now())
+
+  owner User @relation(fields: [ownerId], references: [id])
+}
+
+model TeamMembership {
+  id        String   @id @default(cuid())
+  teamId    String
+  userId    String
+  role      String
+  createdAt DateTime @default(now())
+
+  team Team @relation(fields: [teamId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Lead {
+  id        String   @id @default(cuid())
+  teamId    String
+  name      String
+  website   String?
+  email     String?
+  data      Json?
+  emails    EmailLog[]
+  createdAt DateTime @default(now())
+
+  team Team @relation(fields: [teamId], references: [id])
+}
+
+model Snippet {
+  id        String   @id @default(cuid())
+  teamId    String
+  key       String
+  content   String
+  createdAt DateTime @default(now())
+
+  team Team @relation(fields: [teamId], references: [id])
+}
+
+model EmailLog {
+  id        String   @id @default(cuid())
+  leadId    String
+  userId    String
+  subject   String
+  body      String
+  sentiment String?
+  sentAt    DateTime @default(now())
+
+  lead Lead @relation(fields: [leadId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Subscription {
+  id                String   @id @default(cuid())
+  teamId            String
+  stripeId          String
+  plan              String
+  status            String
+  currentPeriodEnd  DateTime
+  createdAt         DateTime @default(now())
+
+  team Team @relation(fields: [teamId], references: [id])
+}
+
+model SendingDomain {
+  id          String   @id @default(cuid())
+  teamId      String
+  domain      String
+  healthScore Float    @default(1.0)
+  warmupState String   @default("idle")
+  createdAt   DateTime @default(now())
+
+  team Team @relation(fields: [teamId], references: [id])
+}
